@@ -42,9 +42,10 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'django_filters',
+    'drf_spectacular',
 
     # Local apps
-    'bees.apps.BeesConfig'
+    'bees.apps.BeesConfig',
 ]
 
 MIDDLEWARE = [
@@ -140,5 +141,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # DRF
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# drf-spectacular settings - https://drf-spectacular.readthedocs.io/en/latest/settings.html
+SPECTACULAR_SETTINGS = {
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
+    'TITLE': '3Bee Apiary - Interview Coding Challenge',
+    'DESCRIPTION': '3Bee Apiary APIs documentation.',
+    'VERSION': '1.0.0',
 }
