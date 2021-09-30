@@ -18,7 +18,7 @@ logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
 
-def mysql_is_ready():
+def db_is_ready():
     db_conn = connections['default']
     while time() - start_time < check_timeout:
         try:
@@ -33,4 +33,4 @@ def mysql_is_ready():
     return False
 
 
-sys.exit(0) if mysql_is_ready() else sys.exit(1)
+sys.exit(0) if db_is_ready() else sys.exit(1)
