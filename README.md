@@ -35,3 +35,23 @@ http://localhost:8000/api/schema/swagger-ui/
 cd apiary
 docker-compose run web pytest
 ```
+
+# Serverless
+In the `serverless` directory you can find the code used
+to deploy some basic REST APIs using the [Serverless Framework](https://www.serverless.com/).
+
+These APIs are deployed to `AWS Lambda` and interact with `DynamoDB`.
+
+## How to deploy
+```commandline
+cd serverless/apiary/
+serverless deploy
+```
+If the deployment succeed, in order to get some results from the APIs, 
+remember to add some data in the DynamoDB tables.
+
+## Deployed endpoints
+- `/lambdas/devices/{serial}`: given a device serial number, returns the device info.
+- `/lambdas/devices`: returns a paginated list of devices.
+- `/lambdas/hives/{id}`: given an hive ID, returns the hive info.
+- `/lambdas/hives`: returns a paginated list of hives.
