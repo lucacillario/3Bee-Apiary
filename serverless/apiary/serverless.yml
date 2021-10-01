@@ -1,0 +1,81 @@
+service: apiary-serverless-rest-apis
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: python3.8
+  environment:
+    DEVICE_TABLE: Device
+    HIVE_TABLE: Hive
+  httpApi:
+    cors: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DEVICE_TABLE}"
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.HIVE_TABLE}"
+  region: eu-west-1
+  lambdaHashingVersion: 20201221
+
+functions:
+  getDevice:
+    handler: lambdas/functions/devices.get
+    events:
+      - httpApi:
+          path: /lambdas/devices/{serial}
+          method: get
+  listDevices:
+    handler: lambdas/functions/devices.list
+    events:
+      - httpApi:
+          path: /lambdas/devices
+          method: get
+  getHive:
+    handler: lambdas/functions/hives.get
+    events:
+      - httpApi:
+          path: /lambdas/hives/{id}
+          method: get
+  listHives:
+    handler: lambdas/functions/hives.list
+    events:
+      - httpApi:
+          path: /lambdas/hives
+          method: get
+
+resources:
+  Resources:
+    DeviceDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: serial
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: serial
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DEVICE_TABLE}
+    HiveDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.HIVE_TABLE}
